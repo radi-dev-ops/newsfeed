@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ subject }}</title>
+    <style>
+      body { font-family: Arial, sans-serif; color: #1f2933; }
+      h1 { font-size: 20px; }
+      h2 { font-size: 16px; margin-top: 24px; border-bottom: 1px solid #d9e2ec; padding-bottom: 4px; }
+      ul { padding-left: 18px; }
+      li { margin-bottom: 12px; }
+      .meta { color: #52606d; font-size: 12px; }
+      a { color: #0b7285; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <h1>{{ subject }}</h1>
+    <p class="meta">Generated at {{ generated_at.astimezone(tz).strftime('%d %b %Y %H:%M %Z') }} for the last {{ window_hours }} hours.</p>
+    {% if articles|length == 0 %}
+      <p>No new articles were found in the selected window.</p>
+    {% else %}
+      {% for feed_name, entries in grouped_articles.items() %}
+        <h2>{{ feed_name }}</h2>
+        <ul>
+          {% for article in entries %}
+            <li>
+              <a href="{{ article.link }}">{{ article.title }}</a>
+              <div class="meta">{{ article.published.astimezone(tz).strftime('%d %b %Y %H:%M %Z') }}</div>
+              {% if article.summary %}
+                <div>{{ article.summary|striptags }}</div>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    {% endif %}
+  </body>
+</html>
