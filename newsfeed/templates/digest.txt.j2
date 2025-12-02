@@ -1,0 +1,17 @@
+{{ subject }}
+Generated at {{ generated_at.astimezone(tz).strftime('%d %b %Y %H:%M %Z') }} for the last {{ window_hours }} hours.
+
+{% if articles|length == 0 -%}
+No new articles were found in the selected window.
+{% else -%}
+{% for feed_name, entries in grouped_articles.items() -%}
+{{ feed_name }}
+{% for article in entries -%}
+- {{ article.title }} ({{ article.published.astimezone(tz).strftime('%d %b %Y %H:%M %Z') }})
+  {{ article.link }}
+{% if article.summary %}  {{ article.summary|striptags }}
+{% endif %}
+{% endfor -%}
+
+{% endfor -%}
+{% endif -%}

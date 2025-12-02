@@ -1,0 +1,46 @@
+# Example configuration for the Newsfeed automation tool.
+# Copy this file to config.yml and customize the values.
+
+# List every feed you want to poll.
+feeds:
+  - id: happy-mag
+    name: Happy Mag
+    url: https://happymag.tv/feed/
+  - id: abc-triplej
+    name: Triple J Music News
+    url: https://www.abc.net.au/listen/radio/triplej/musicnews/rss.xml
+
+# Default lookback window (hours) used when a delivery omits `window_hours`.
+lookback_hours: 12
+
+# SMTP and email sender configuration.
+email:
+  sender: "News Bot <bot@example.com>"
+  smtp:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SMTP_USERNAME}  # environment variable substitution supported
+    password: ${SMTP_PASSWORD}
+    use_tls: true
+    use_ssl: false
+
+# Deliveries describe who receives the digest, which feeds to include,
+# and when to send it.
+deliveries:
+  - name: Editorial AM
+    feeds: [happy-mag, abc-triplej]
+    recipients:
+      - editorial@example.com
+    window_hours: 12
+    subject_template: "Happy Mag digest — {{ generated_at.astimezone(tz).strftime('%-d %B %Y %H:%M %Z') }}"
+    schedule:
+      cron: "0 8 * * 1-5"
+      timezone: "Australia/Sydney"
+  - name: Editorial PM
+    feeds: [happy-mag, abc-triplej]
+    recipients:
+      - editorial@example.com
+      - marketing@example.com
+    schedule:
+      every_minutes: 720
+      timezone: "Australia/Sydney"
